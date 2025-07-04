@@ -1,71 +1,90 @@
 {% extends 'coreapp/base.html' %}
 
+{% block title %}Stonewesthomes - Premium Real Estate | Find Your Dream Home{% endblock %}
+{% block description %}Discover exceptional properties with Stonewesthomes. Browse luxury homes, apartments, and condos for sale and rent. Your trusted real estate partner since 2005.{% endblock %}
+
 {% block content %}
 <div class="home-background">
     <div class="hero-content">
         <h1>Find Your Dream Home</h1>
-        <p>Discover exceptional properties with Stonewesthomes</p>
+        <p>Discover exceptional properties with Stonewesthomes - where luxury meets comfort</p>
         <div class="search-container">
-            <form class="property-search-form">
+            <form class="property-search-form" role="search" aria-label="Property search">
                 <div class="form-group">
-                    <select name="property-type" id="property-type">
-                        <option value="">Property Type</option>
+                    <label for="property-type">Property Type</label>
+                    <select name="property-type" id="property-type" aria-describedby="property-type-help">
+                        <option value="">All Types</option>
                         <option value="house">House</option>
                         <option value="apartment">Apartment</option>
                         <option value="condo">Condo</option>
                         <option value="townhouse">Townhouse</option>
+                        <option value="studio">Studio</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <select name="location" id="location">
-                        <option value="">Location</option>
+                    <label for="location">Location</label>
+                    <select name="location" id="location" aria-describedby="location-help">
+                        <option value="">All Locations</option>
                         <option value="downtown">Downtown</option>
                         <option value="suburbs">Suburbs</option>
                         <option value="countryside">Countryside</option>
+                        <option value="beachfront">Beachfront</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <select name="price-range" id="price-range">
-                        <option value="">Price Range</option>
+                    <label for="price-range">Price Range</label>
+                    <select name="price-range" id="price-range" aria-describedby="price-help">
+                        <option value="">Any Price</option>
                         <option value="100-300">$100k - $300k</option>
                         <option value="300-500">$300k - $500k</option>
                         <option value="500-800">$500k - $800k</option>
                         <option value="800+">$800k+</option>
                     </select>
                 </div>
-                <button type="submit" class="search-btn">Search</button>
+                <button type="submit" class="search-btn" aria-label="Search properties">
+                    Search Properties
+                </button>
             </form>
         </div>
         <div class="cta-buttons">
-            <a href="/for-sale" class="cta-btn">Browse Properties</a>
-            <a href="/contact" class="cta-btn secondary">Contact Us</a>
+            <a href="/for-sale" class="cta-btn" aria-label="Browse properties for sale">Browse Properties</a>
+            <a href="/contact" class="cta-btn secondary" aria-label="Contact our team">Contact Us</a>
         </div>
     </div>
 </div>
 
-<section class="featured-properties">
+<section class="featured-properties" aria-labelledby="featured-title">
     <div class="container">
-        <h2 class="section-title">Featured Properties</h2>
-        <div class="property-grid">
+        <h2 id="featured-title" class="section-title">Featured Properties</h2>
+        <div class="property-grid" role="list">
             {% for property in featured_properties %}
-            <div class="property-card">
-                <div class="property-image" style="background-image: url('{% if property.image %}{{ property.image.url }}{% else %}/static/images/home-background.jpg{% endif %}')">
-                    <span class="property-badge{% if property.listing_type == 'rent' %} rent{% endif %}">{{ property.get_listing_type_display }}</span>
+            <article class="property-card" role="listitem">
+                <div class="property-image" style="background-image: url('{% if property.image %}{{ property.image.url }}{% else %}/static/images/home-background.jpg{% endif %}')" role="img" aria-label="{{ property.title }} property image">
+                    <span class="property-badge{% if property.listing_type == 'rent' %} rent{% endif %}" aria-label="Property status">{{ property.get_listing_type_display }}</span>
                 </div>
                 <div class="property-details">
                     <h3>{{ property.title }}</h3>
                     <p class="property-address">{{ property.address }}</p>
-                    <p class="property-price">{{ property.get_price_display }}</p>
-                    <div class="property-features">
-                        <span><i class="feature-icon">�️</i> {% if property.bedrooms == 0 %}Studio{% else %}{{ property.bedrooms }} Bed{% if property.bedrooms > 1 %}s{% endif %}{% endif %}</span>
-                        <span><i class="feature-icon">🚿</i> {{ property.bathrooms|floatformat:0 }} Bath{% if property.bathrooms != 1 %}s{% endif %}</span>
-                        <span><i class="feature-icon">�</i> {{ property.square_footage|floatformat:0 }} sqft</span>
+                    <p class="property-price" aria-label="Property price">{{ property.get_price_display }}</p>
+                    <div class="property-features" role="list" aria-label="Property features">
+                        <span role="listitem" aria-label="Bedrooms">
+                            <i class="feature-icon" aria-hidden="true">🛏️</i> 
+                            {% if property.bedrooms == 0 %}Studio{% else %}{{ property.bedrooms }} Bed{% if property.bedrooms > 1 %}s{% endif %}{% endif %}
+                        </span>
+                        <span role="listitem" aria-label="Bathrooms">
+                            <i class="feature-icon" aria-hidden="true">🚿</i> 
+                            {{ property.bathrooms|floatformat:0 }} Bath{% if property.bathrooms != 1 %}s{% endif %}
+                        </span>
+                        <span role="listitem" aria-label="Square footage">
+                            <i class="feature-icon" aria-hidden="true">📏</i> 
+                            {{ property.square_footage|floatformat:0 }} sqft
+                        </span>
                     </div>
-                    <a href="{% url 'property_detail' property.pk %}" class="property-link">View Details</a>
+                    <a href="{% url 'property_detail' property.pk %}" class="property-link" aria-label="View details for {{ property.title }}">View Details</a>
                 </div>
-            </div>
+            </article>
             {% empty %}
-            <div class="no-properties">
+            <div class="no-properties" role="alert">
                 <h3>No featured properties available</h3>
                 <p>Please check back later for new listings.</p>
             </div>
@@ -74,59 +93,59 @@
     </div>
 </section>
 
-<section class="services">
+<section class="services" aria-labelledby="services-title">
     <div class="container">
-        <h2 class="section-title">Our Services</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon">🏠</div>
+        <h2 id="services-title" class="section-title">Our Premium Services</h2>
+        <div class="services-grid" role="list">
+            <article class="service-card" role="listitem">
+                <div class="service-icon" aria-hidden="true">🏠</div>
                 <h3>Property Sales</h3>
-                <p>Find your dream home with our extensive listings of properties for sale.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">🔑</div>
-                <h3>Rental Properties</h3>
-                <p>Discover the perfect rental property to suit your lifestyle and budget.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">📊</div>
+                <p>Find your dream home with our extensive listings of premium properties for sale. Expert guidance throughout your buying journey.</p>
+            </article>
+            <article class="service-card" role="listitem">
+                <div class="service-icon" aria-hidden="true">🔑</div>
+                <h3>Luxury Rentals</h3>
+                <p>Discover exceptional rental properties that suit your lifestyle and budget. From downtown apartments to suburban homes.</p>
+            </article>
+            <article class="service-card" role="listitem">
+                <div class="service-icon" aria-hidden="true">📊</div>
                 <h3>Property Management</h3>
-                <p>Let us handle the management of your investment properties efficiently.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">📝</div>
+                <p>Professional management services for your investment properties. Maximize returns with our comprehensive solutions.</p>
+            </article>
+            <article class="service-card" role="listitem">
+                <div class="service-icon" aria-hidden="true">📝</div>
                 <h3>Real Estate Consultation</h3>
-                <p>Get expert advice on real estate investments and property decisions.</p>
-            </div>
+                <p>Expert advice on real estate investments, market analysis, and property decisions from our experienced team.</p>
+            </article>
         </div>
     </div>
 </section>
 
-<section class="testimonials">
+<section class="testimonials" aria-labelledby="testimonials-title">
     <div class="container">
-        <h2 class="section-title">What Our Clients Say</h2>
-        <div class="testimonial-slider">
-            <div class="testimonial">
-                <p class="testimonial-text">"Stonewesthomes helped us find our perfect family home. Their team was professional, knowledgeable, and made the entire process smooth and stress-free."</p>
-                <div class="testimonial-author">- John & Sarah Thompson</div>
-            </div>
-            <div class="testimonial">
-                <p class="testimonial-text">"As a first-time homebuyer, I was nervous about the process. The team at Stonewesthomes guided me every step of the way and found me a property that exceeded my expectations."</p>
-                <div class="testimonial-author">- Michael Rodriguez</div>
-            </div>
-            <div class="testimonial">
-                <p class="testimonial-text">"We've worked with Stonewesthomes for both buying and selling properties. Their market knowledge and negotiation skills are unmatched. Highly recommended!"</p>
-                <div class="testimonial-author">- Emily & David Wilson</div>
-            </div>
+        <h2 id="testimonials-title" class="section-title">What Our Clients Say</h2>
+        <div class="testimonial-slider" role="list">
+            <article class="testimonial" role="listitem">
+                <blockquote class="testimonial-text">"Stonewesthomes helped us find our perfect family home. Their team was professional, knowledgeable, and made the entire process smooth and stress-free. Highly recommended!"</blockquote>
+                <cite class="testimonial-author">- John & Sarah Thompson</cite>
+            </article>
+            <article class="testimonial" role="listitem">
+                <blockquote class="testimonial-text">"As a first-time homebuyer, I was nervous about the process. The team at Stonewesthomes guided me every step of the way and found me a property that exceeded my expectations."</blockquote>
+                <cite class="testimonial-author">- Michael Rodriguez</cite>
+            </article>
+            <article class="testimonial" role="listitem">
+                <blockquote class="testimonial-text">"We've worked with Stonewesthomes for both buying and selling properties. Their market knowledge and negotiation skills are unmatched. Truly exceptional service!"</blockquote>
+                <cite class="testimonial-author">- Emily & David Wilson</cite>
+            </article>
         </div>
     </div>
 </section>
 
-<section class="cta-section">
+<section class="cta-section" aria-labelledby="cta-title">
     <div class="container">
-        <h2>Ready to Find Your Dream Home?</h2>
-        <p>Contact our team of experts today and let us help you find the perfect property.</p>
-        <a href="/contact" class="cta-btn large">Get Started</a>
+        <h2 id="cta-title">Ready to Find Your Dream Home?</h2>
+        <p>Contact our team of experts today and let us help you find the perfect property that matches your lifestyle and budget.</p>
+        <a href="/contact" class="cta-btn large" aria-label="Get started with Stonewesthomes">Get Started Today</a>
     </div>
 </section>
 {% endblock %}
