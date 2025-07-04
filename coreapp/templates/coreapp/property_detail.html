@@ -1,0 +1,246 @@
+{% extends 'coreapp/base.html' %}
+
+{% block content %}
+<section class="property-hero">
+    <div class="container">
+        <div class="property-hero-content">
+            <div class="property-hero-image">
+                <img src="{% if property.image %}{{ property.image.url }}{% else %}/static/images/home-background.jpg{% endif %}" alt="{{ property.title }}">
+                <div class="property-hero-badge">
+                    <span class="property-badge{% if property.listing_type == 'rent' %} rent{% endif %}{% if property.listing_type == 'sold' %} sold-badge{% endif %}">{{ property.get_listing_type_display }}</span>
+                </div>
+            </div>
+            <div class="property-hero-details">
+                <h1>{{ property.title }}</h1>
+                <p class="property-address">📍 {{ property.address }}</p>
+                <p class="property-price">{{ property.get_price_display }}</p>
+                
+                <div class="property-features-grid">
+                    <div class="feature-item">
+                        <i class="feature-icon">🛏️</i>
+                        <span>{% if property.bedrooms == 0 %}Studio{% else %}{{ property.bedrooms }} Bedroom{% if property.bedrooms > 1 %}s{% endif %}{% endif %}</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon">🚿</i>
+                        <span>{{ property.bathrooms|floatformat:0 }} Bathroom{% if property.bathrooms != 1 %}s{% endif %}</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon">📏</i>
+                        <span>{{ property.square_footage|floatformat:0 }} sqft</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon">🏠</i>
+                        <span>{{ property.get_property_type_display }}</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon">📍</i>
+                        <span>{{ property.get_location_display }}</span>
+                    </div>
+                </div>
+                
+                <div class="property-actions">
+                    {% if property.listing_type != 'sold' %}
+                    <a href="/contact" class="cta-btn large">Contact Agent</a>
+                    <a href="#" class="cta-btn secondary large">Schedule Viewing</a>
+                    {% else %}
+                    <p class="sold-status">This property has been sold</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="property-details-section">
+    <div class="container">
+        <div class="property-content">
+            <div class="property-description">
+                <h2>Description</h2>
+                <p>{{ property.description|linebreaks }}</p>
+            </div>
+            
+            <div class="property-info-grid">
+                <div class="info-card">
+                    <h3>Property Details</h3>
+                    <ul>
+                        <li><strong>Property Type:</strong> {{ property.get_property_type_display }}</li>
+                        <li><strong>Listing Type:</strong> {{ property.get_listing_type_display }}</li>
+                        <li><strong>Location:</strong> {{ property.get_location_display }}</li>
+                        <li><strong>Square Footage:</strong> {{ property.square_footage|floatformat:0 }} sqft</li>
+                        <li><strong>Bedrooms:</strong> {% if property.bedrooms == 0 %}Studio{% else %}{{ property.bedrooms }}{% endif %}</li>
+                        <li><strong>Bathrooms:</strong> {{ property.bathrooms }}</li>
+                        {% if property.listing_type == 'sold' %}
+                        <li><strong>Date Sold:</strong> {{ property.updated_at|date:"F j, Y" }}</li>
+                        {% else %}
+                        <li><strong>Listed:</strong> {{ property.created_at|date:"F j, Y" }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3>Contact Information</h3>
+                    <p>Interested in this property? Get in touch with our experienced team.</p>
+                    <div class="contact-info">
+                        <p><strong>Email:</strong> info@stonewesthomes.com</p>
+                        <p><strong>Phone:</strong> (555) 123-4567</p>
+                        <p><strong>Office Hours:</strong> Mon-Fri 9AM-6PM</p>
+                    </div>
+                    <a href="/contact" class="cta-btn">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="similar-properties">
+    <div class="container">
+        <h2>Similar Properties</h2>
+        <p>Explore other properties that might interest you</p>
+        <div class="property-grid">
+            <!-- This would be populated with similar properties in a real implementation -->
+            <div class="property-links">
+                <a href="{% if property.listing_type == 'rent' %}/for-rent{% elif property.listing_type == 'sale' %}/for-sale{% else %}/sold{% endif %}" class="cta-btn secondary">View All {{ property.get_listing_type_display }} Properties</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.property-hero {
+    padding: 2rem 0;
+    background: #f8f9fa;
+}
+
+.property-hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.property-hero-image {
+    position: relative;
+}
+
+.property-hero-image img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.property-hero-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}
+
+.property-hero-details h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.property-address {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.property-price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+.property-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.property-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.property-details-section {
+    padding: 3rem 0;
+}
+
+.property-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.info-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-card h3 {
+    margin-bottom: 1rem;
+}
+
+.info-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-card li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.contact-info {
+    margin: 1rem 0;
+}
+
+.similar-properties {
+    padding: 3rem 0;
+    background: #f8f9fa;
+}
+
+.property-links {
+    text-align: center;
+    padding: 2rem;
+}
+
+.sold-status {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .property-hero-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .property-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .property-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'coreapp/base.html' %}
+
+{% block content %}
+<section class="listings-hero sold-hero">
+    <div class="container">
+        <h1 class="page-title">Recently Sold Properties</h1>
+        <p class="page-subtitle">Explore our successfully closed transactions</p>
+    </div>
+</section>
+
+<section class="sold-intro">
+    <div class="container">
+        <div class="intro-content">
+            <h2>Our Recent Success Stories</h2>
+            <p>At Stone West Homes, we take pride in our track record of successful property sales. Browse through our recently sold properties to get an idea of our market presence and the types of properties we handle. Each sale represents a satisfied client and our commitment to achieving the best possible outcomes.</p>
+            <p>Thinking about selling your property? <a href="/contact">Contact us</a> for a free property valuation and market analysis.</p>
+        </div>
+    </div>
+</section>
+
+<section class="filters-section">
+    <div class="container">
+        <form class="filters-form">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="property-type">Property Type</label>
+                    <select id="property-type" name="property-type">
+                        <option value="">All Types</option>
+                        <option value="house">House</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="condo">Condo</option>
+                        <option value="townhouse">Townhouse</option>
+                        <option value="land">Land</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="location">Location</label>
+                    <select id="location" name="location">
+                        <option value="">All Locations</option>
+                        <option value="downtown">Downtown</option>
+                        <option value="suburbs">Suburbs</option>
+                        <option value="countryside">Countryside</option>
+                        <option value="beachfront">Beachfront</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sold-date">Sold Date</label>
+                    <select id="sold-date" name="sold-date">
+                        <option value="">Any Time</option>
+                        <option value="1">Last Month</option>
+                        <option value="3">Last 3 Months</option>
+                        <option value="6">Last 6 Months</option>
+                        <option value="12">Last Year</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="price-range">Price Range</label>
+                    <select id="price-range" name="price-range">
+                        <option value="">Any Price</option>
+                        <option value="under-300k">Under $300K</option>
+                        <option value="300k-500k">$300K - $500K</option>
+                        <option value="500k-750k">$500K - $750K</option>
+                        <option value="750k-1m">$750K - $1M</option>
+                        <option value="over-1m">Over $1M</option>
+                    </select>
+                </div>
+                <div class="filter-group filter-buttons">
+                    <button type="submit" class="filter-btn">Apply Filters</button>
+                    <button type="reset" class="reset-btn">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="listings-section sold-listings">
+    <div class="container">
+        <div class="listings-header">
+            <h2>Sold Properties</h2>
+            <p class="results-count">Showing {{ total_count }} properties</p>
+        </div>
+        <div class="listings-grid">
+            {% for property in properties %}
+            <div class="property-card sold-card">
+                <div class="property-image" style="background-image: url('{% if property.image %}{{ property.image.url }}{% else %}/static/images/home-background.jpg{% endif %}')">
+                    <span class="property-badge sold-badge">SOLD</span>
+                    <div class="property-price">{{ property.get_price_display }}</div>
+                </div>
+                <div class="property-details">
+                    <h3>{{ property.title }}</h3>
+                    <p class="property-address">{{ property.address }}</p>
+                    <div class="property-features">
+                        <span><i class="feature-icon">🛏️</i> {% if property.bedrooms == 0 %}Studio{% else %}{{ property.bedrooms }} Bed{% if property.bedrooms > 1 %}s{% endif %}{% endif %}</span>
+                        <span><i class="feature-icon">🚿</i> {{ property.bathrooms|floatformat:0 }} Bath{% if property.bathrooms != 1 %}s{% endif %}</span>
+                        <span><i class="feature-icon">📏</i> {{ property.square_footage|floatformat:0 }} sqft</span>
+                    </div>
+                    <p class="sold-date">Sold: {{ property.updated_at|date:"F j, Y" }}</p>
+                    <p class="property-description">{{ property.description|truncatewords:25 }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-properties">
+                <h3>No sold properties found</h3>
+                <p>No properties have been marked as sold yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if properties.has_other_pages %}
+        <div class="pagination">
+            {% if properties.has_previous %}
+                <a href="?page={{ properties.previous_page_number }}" class="pagination-link">← Previous</a>
+            {% endif %}
+            
+            {% for num in properties.paginator.page_range %}
+                {% if properties.number == num %}
+                    <a href="#" class="pagination-link active">{{ num }}</a>
+                {% elif num > properties.number|add:'-3' and num < properties.number|add:'3' %}
+                    <a href="?page={{ num }}" class="pagination-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if properties.has_next %}
+                <a href="?page={{ properties.next_page_number }}" class="pagination-link">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="market-stats">
+    <div class="container">
+        <h2>Our Market Performance</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">List-to-Sale Price Ratio</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">21</div>
+                <div class="stat-label">Average Days on Market</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">150+</div>
+                <div class="stat-label">Properties Sold in 2023</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Sell Your Property?</h2>
+        <p>Let our experienced team help you achieve the best possible outcome.</p>
+        <a href="/contact" class="cta-btn large">Get a Free Valuation</a>
+    </div>
+</section>
+{% endblock %}
